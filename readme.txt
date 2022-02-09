@@ -1,6 +1,8 @@
 Run API
 	- npm install
 	- node main.js
+Tests
+	- node test
 
 [GET] localhost:3000/health
 
@@ -17,3 +19,4 @@ Example request:
 		"XXXX9F0Cd3Adb2630f789580BE585B7Ad37006EA4"
 	]
 }
+
