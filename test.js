@@ -65,7 +65,7 @@ describe("POST checkBalances",function(){
 			.end(function(err,res){
 				// Valid
 				res.body.status.should.equal(true);
-				res.body.result[0].balance.should.equal(667.8601811724393);
+				res.body.result[0].balance.should.not.equal(0);
 				res.body.result[0].addressIsValid.should.equal(true);
 				// Invalid
 				res.body.result[1].balance.should.equal(-1);
@@ -82,7 +82,7 @@ describe("POST checkBalances",function(){
 			.end(function(err,res){
 				// Valid
 				res.body.status.should.equal(true);
-				res.body.result[0].balance.should.equal(667.8601811724393);
+				res.body.result[0].balance.should.not.equal(0);
 				res.body.result[0].addressIsValid.should.equal(true);
 				// Invalid
 				res.body.result[1].balance.should.equal(-1);

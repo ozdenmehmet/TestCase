@@ -2,7 +2,7 @@ Run API
 	- npm install
 	- node main.js
 Tests
-	- node test
+	- npm test
 
 [GET] localhost:3000/health
 
