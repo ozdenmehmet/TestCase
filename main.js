@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 //Web3
 var Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("https://speedy-nodes-nyc.moralis.io/db8708d3e4564b491d898e3e/eth/mainnet"));
@@ -38,28 +40,43 @@ async function getBalance(address){
 		return -1;
 	}
 }
+//Promise creator 
+function fetcher(address, ethPrice){
+	return new Promise(async (resolve, reject) => {
+		if(Web3.utils.isAddress(address)){
+			let balance =  await getBalance(address);
+			let totalAccountValue = ethPrice.data.ethereum.usd * Number(balance);
+			resolve({"address": address, "addressIsValid": true, "balances": [{"balance_ETH": Number(balance)}], "totalAccountValue_USD": totalAccountValue});
+			return;
+		}
+		else{
+			resolve({"address": address, "addressIsValid": false, "balances": [{"balance_ETH": -1}],  "totalAccountValue_USD": -1});
+		}
+	});
+}
 
 //Checks the incoming address list and then if exist returns the account balances of the addresses 
 app.post('/checkBalances', async (req, res) => {
 	try{
-		if(req.body.addr_array == null || req.body.addr_array.length == 0){ throw new Error("Request empty or undefined"); }
 		let addr_array = req.body.addr_array;
-		let responseArray = [];
+		if(addr_array == null || addr_array.length == 0){ throw new Error("Request empty or undefined"); }
 
-		for (var i = 0; i < addr_array.length; i++) {
-			if(Web3.utils.isAddress(addr_array[i])){
-				let balance = await getBalance(addr_array[i]);
-				responseArray.push({"address": addr_array[i], "addressIsValid": true, "balance": Number(balance)});
-			}
-			else{
-				responseArray.push({"address": addr_array[i], "addressIsValid": false, "balance": -1});
-			}
+		//Fetch eth current price from coingecko
+		let ethPrice = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2C&vs_currencies=usd');
+
+		//promise array creation
+		let promiseArray = addr_array.map(address => fetcher(address, ethPrice));
+
+		//run all promises
+		Promise.all(promiseArray)
+			.then(results => { res.send(results); })
+			.catch(error => { res.send({"result":error.message, "status": false, "timestamp": Date.now()});	});
 		}
-		res.send({"result":responseArray, "status": true, "timestamp": Date.now()});
-	}
 	catch(e){
 		res.send({"result":e.message, "status": false, "timestamp": Date.now()});
 	}
+	
+	
 })
 
 //Start API at 3000
