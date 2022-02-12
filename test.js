@@ -65,10 +65,10 @@ describe("POST checkBalances",function(){
 			.end(function(err,res){
 				// Valid
 				res.body.status.should.equal(true);
-				res.body.result[0].balance.should.not.equal(0);
+				res.body.result[0].balances[0].balance_ETH.should.not.equal(0);
 				res.body.result[0].addressIsValid.should.equal(true);
 				// Invalid
-				res.body.result[1].balance.should.equal(-1);
+				res.body.result[1].balances[0].balance_ETH.should.equal(-1);
 				res.body.result[1].addressIsValid.should.equal(false);
 				done();
 		});
@@ -82,10 +82,10 @@ describe("POST checkBalances",function(){
 			.end(function(err,res){
 				// Valid
 				res.body.status.should.equal(true);
-				res.body.result[0].balance.should.not.equal(0);
+				res.body.result[0].balances[0].balance_ETH.should.not.equal(0);
 				res.body.result[0].addressIsValid.should.equal(true);
 				// Invalid
-				res.body.result[1].balance.should.equal(-1);
+				res.body.result[1].balances[0].balance_ETH.should.equal(-1);
 				res.body.result[1].addressIsValid.should.equal(false);
 				done();
 		});

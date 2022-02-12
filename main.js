@@ -69,7 +69,7 @@ app.post('/checkBalances', async (req, res) => {
 
 		//run all promises
 		Promise.all(promiseArray)
-			.then(results => { res.send(results); })
+			.then(results => { res.send({"result":results, "status": true, "timestamp": Date.now()}); })
 			.catch(error => { res.send({"result":error.message, "status": false, "timestamp": Date.now()});	});
 		}
 	catch(e){
